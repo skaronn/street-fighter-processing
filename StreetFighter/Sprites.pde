@@ -11,7 +11,7 @@ class Sprites {
   final int[] walk = new int[2*nbWalk];
 
   Sprites(String n) {
-    String url = n + ".gif";
+    String url = "sprites/" + n + ".gif";
     sprite = loadImage(url);
     loadSpritePositions();
     if (help) {
