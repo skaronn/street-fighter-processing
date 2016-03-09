@@ -1,3 +1,5 @@
+//http://wiki.shoryuken.com/Street_Fighter_Alpha_3
+//http://streetfighter.wikia.com/wiki/Street_Fighter_Alpha_3
 class Character {
   Sprites sprites;
 
