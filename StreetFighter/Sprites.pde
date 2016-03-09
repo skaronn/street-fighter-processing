@@ -1,14 +1,25 @@
 class Sprites {
   Boolean help = true;
   SpritesHelper spriteHelper;
+  int idxDuration = 120;//number of frames during which a sprite is displayed
+  int idxTime = millis();
+  String prevState = "idle";
 
   PImage sprite;
-  int w = 135;
-  int h = 140;
+  int w = 10;
+  int h = 10;
 
   int walkIdx = 0;
   final int nbWalk = 7;
   final int[] walk = new int[2*nbWalk];
+  final int walkW = 135;
+  final int walkH = 140;
+
+  int idleIdx = 0;
+  final int nbIdle = 10;
+  final int[] idle = new int[2*nbIdle];
+  final int idleW = 120;
+  final int idleH = 120;
 
   Sprites(String n) {
     String url = "sprites/" + n + ".gif";
@@ -19,24 +30,62 @@ class Sprites {
     }
   }
 
-  void display(String state, int destx, int desty) {
-    int destw = w;
-    int srcw = state == "walkingL" ? -destw : destw;
-    int srcx = walk[2*walkIdx] + (state == "walkingL" ? destw : 0);
-    int srcy = walk[2*walkIdx+1];
-    copy(sprite, srcx, srcy, srcw, h, destx, desty, destw, h);
+  void display(String state, int direction, int destx, int desty) {
+    dealWithIdx(state, direction);
+
+    int srcw = 10;
+    int srcx = 0, srcy = 0;
+    int[] moveArray = {};
+    int idx = 0;
+
+    if (state == "walkingL" || state == "walkingR") {
+      moveArray = walk;
+      idx = walkIdx;
+      w = walkW;
+      h = walkH;
+    } else if (state == "idle") {
+      moveArray = idle;
+      idx = idleIdx;
+      w = idleW;
+      h = idleH;
+    }
+    srcw = direction == LEFT ? -w : w;
+    
+    srcx = moveArray[2*idx] + (direction == LEFT ? w : 0);
+    srcy = moveArray[2*idx+1];
+    copy(sprite, srcx, srcy, srcw, h, destx, desty, w, h);
+
+    prevState = state;
+    
     if (help) {
-      spriteHelper.displayRect(walk[2*walkIdx], walk[2*walkIdx+1], w, h);
+      spriteHelper.displayRect(moveArray[2*idx], moveArray[2*idx+1], w, h);
     }
   }
 
-  void dealWithIdx(int dir) {
-    if (dir == LEFT) {
-      walkIdx = ((walkIdx - 1)%nbWalk+nbWalk)%nbWalk;
-    } else if (dir == RIGHT) {
-      walkIdx = (walkIdx+1)%nbWalk;
+  void dealWithIdx(String state, int direction) {
+    // sprite should be changed immediately if the state has changed
+    // otherwise, wait during [idxDuration] frames
+    Boolean refresh = false;
+    int currentTime = millis();
+    
+    if(state != prevState){
+      refresh = true;
+      idxTime = currentTime;
+    }else if(currentTime - idxTime > idxDuration){
+      idxTime = currentTime;
+       refresh = true; 
     }
-//    println("walkIdx: " + walkIdx);
+      
+    if(refresh){
+      if (state == "walkingL") {
+        walkIdx = ((walkIdx - 1)%nbWalk+nbWalk)%nbWalk;
+      } else if (state == "walkingR") {
+        walkIdx = (walkIdx+1)%nbWalk;
+      } else if (state == "idle") {
+        idleIdx = (idleIdx+1)%nbIdle;
+      }
+    }
+    //    println("walkIdx: " + walkIdx);
   }
 
   void loadSpritePositions() {
@@ -55,6 +104,30 @@ class Sprites {
     walk[11] = 935;
     walk[12] = 385; 
     walk[13] = 935;
+
+    /// IDLE
+    idle[0] = 59;
+    idle[1] = 547;
+    idle[2] = 190;
+    idle[3] = 547;
+    idle[4] = 322;
+    idle[5] = 547;
+    idle[6] = 452;
+    idle[7] = 547;// w = h = 120
+
+    idle[8] = 0;
+    idle[9] = 681;
+    idle[10] = 131;
+    idle[11] = 681;
+    idle[12] = 260;
+    idle[13] = 681;
+    idle[14] = 386;
+    idle[15] = 681;
+    idle[16] = 516;
+    idle[17] = 681;
+
+    idle[18] = 43;
+    idle[19] = 814;
   }
 }
 

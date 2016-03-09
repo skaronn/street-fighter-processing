@@ -30,7 +30,18 @@ void keyPressed() {
     switch(keyCode) {
     case LEFT:
     case RIGHT:
-      c1.processKey(keyCode);
+      c1.processKeyPressed(keyCode);
+      break;
+    }
+  }
+}
+
+void keyReleased() {
+  if (key == CODED) {
+    switch(keyCode) {
+    case LEFT:
+    case RIGHT:
+      c1.processKeyReleased(keyCode);
       break;
     }
   }

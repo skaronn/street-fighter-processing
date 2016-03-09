@@ -6,11 +6,12 @@ class Character {
   String name;
   String url;
 
-  int xSpeed = 30;
+  int xSpeed = 10;
   int x = width/2;
   int y = height/2;
 
-  String direction = "walkingR";
+  String state = "idle";
+  int direction = RIGHT;
 
 
   Character(String n) {
@@ -19,25 +20,36 @@ class Character {
   } 
 
   void display() {
-    sprites.display(direction, x, y);
+    sprites.display(state, direction, x, y);
   }
 
-  void processKey(int k) {
+  void processKeyPressed(int k) {
     switch(k) {
     case LEFT:
-      if (direction == "walkingR") {
-        direction = "walkingL";
-      } else {
-        sprites.dealWithIdx(LEFT);
+      if (state == "walkingR" || state == "idle") {
+        direction = LEFT;
+        state = "walkingL";
+      } else if (state == "walkingL"){
         x = max(x - xSpeed, 0);
       }
       break;
     case RIGHT:
-      if (direction == "walkingL") {
-        direction = "walkingR";
-      } else {
-        sprites.dealWithIdx(RIGHT);
+      if (state == "walkingL" || state == "idle") {
+        direction = RIGHT;
+        state = "walkingR";
+      } else if (state == "walkingR") {
         x = min(x + xSpeed, width - sprites.w);
+      }
+      break;
+    }
+  }
+  
+  void processKeyReleased(int k) {
+    switch(k) {
+    case LEFT:
+    case RIGHT:
+      if (state == "walkingL" || state == "walkingR") {
+        state = "idle";
       }
       break;
     }
