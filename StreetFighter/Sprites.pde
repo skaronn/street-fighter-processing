@@ -20,6 +20,12 @@ class Sprites {
   final int[] idle = new int[2*nbIdle];
   final int idleW = 120;
   final int idleH = 120;
+  
+  int crouchIdx = 0;
+  final int nbCrouch = 3;
+  final int[] crouch = new int[2*nbCrouch];
+  final int crouchW = 120;
+  final int crouchH = 120;
 
   Sprites(String n) {
     String url = "sprites/" + n + ".gif";
@@ -48,6 +54,11 @@ class Sprites {
       idx = idleIdx;
       w = idleW;
       h = idleH;
+    } else if (state == "crouch") {
+      moveArray = crouch;
+      idx = crouchIdx;
+      w = crouchW;
+      h = crouchH;
     }
     
     srcw = direction == LEFT ? -w : w;
@@ -65,14 +76,13 @@ class Sprites {
 
   void dealWithIdx(String state, int direction) {
     // sprite should be changed immediately if the state has changed
-    // otherwise, wait during [idxDuration] frames
+    // otherwise, wait during [idxDuration] milliseconds
     Boolean refresh = false;
     int currentTime = millis();
 
     if (state != prevState) {
-      refresh = true;
       idxTime = currentTime;
-      idleIdx = walkIdx = 0;
+      idleIdx = walkIdx = crouchIdx = 0;
     } else if (currentTime - idxTime > idxDuration) {
       idxTime = currentTime;
       refresh = true;
@@ -84,6 +94,9 @@ class Sprites {
         walkIdx = (walkIdx+1)%nbWalk;
       } else if (state == "idle") {
         idleIdx = (idleIdx+1)%nbIdle;
+      } else if(state == "crouch"){
+        crouchIdx = min(crouchIdx+1, nbCrouch-1);
+        println(crouchIdx);
       }
     }
     //    println("walkIdx: " + walkIdx);
@@ -123,6 +136,14 @@ class Sprites {
     idle[13] = 681;
     idle[14] = 516;
     idle[15] = 681;
+    
+    /// CROUCH
+    crouch[0] = 59;
+    crouch[1] = 549;
+    crouch[2] = 137;
+    crouch[3] = 1267;
+    crouch[4] = 264;
+    crouch[5] = 1267;
   }
 }
 

@@ -39,6 +39,9 @@ class Character {
       }
       x = min(x + xSpeed, width - sprites.w);
       break;
+      case DOWN:
+        state = "crouch";
+      break;
     }
   }
 
@@ -47,6 +50,11 @@ class Character {
     case LEFT:
     case RIGHT:
       if (state == "walkingL" || state == "walkingR") {
+        state = "idle";
+      }
+      break;
+    case DOWN:
+      if (state == "crouch") {
         state = "idle";
       }
       break;
