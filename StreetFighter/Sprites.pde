@@ -16,7 +16,7 @@ class Sprites {
   final int walkH = 140;
 
   int idleIdx = 0;
-  final int nbIdle = 10;
+  final int nbIdle = 8;
   final int[] idle = new int[2*nbIdle];
   final int idleW = 120;
   final int idleH = 120;
@@ -33,9 +33,9 @@ class Sprites {
   void display(String state, int direction, int destx, int desty) {
     dealWithIdx(state, direction);
 
-    int srcw = 10;
-    int srcx = 0, srcy = 0;
-    int[] moveArray = {};
+    int srcw;
+    int srcx, srcy;
+    int[] moveArray = {0, 0};
     int idx = 0;
 
     if (state == "walkingL" || state == "walkingR") {
@@ -49,14 +49,15 @@ class Sprites {
       w = idleW;
       h = idleH;
     }
-    srcw = direction == LEFT ? -w : w;
     
+    srcw = direction == LEFT ? -w : w;
+
     srcx = moveArray[2*idx] + (direction == LEFT ? w : 0);
     srcy = moveArray[2*idx+1];
     copy(sprite, srcx, srcy, srcw, h, destx, desty, w, h);
 
     prevState = state;
-    
+
     if (help) {
       spriteHelper.displayRect(moveArray[2*idx], moveArray[2*idx+1], w, h);
     }
@@ -67,19 +68,19 @@ class Sprites {
     // otherwise, wait during [idxDuration] frames
     Boolean refresh = false;
     int currentTime = millis();
-    
-    if(state != prevState){
+
+    if (state != prevState) {
       refresh = true;
       idxTime = currentTime;
-    }else if(currentTime - idxTime > idxDuration){
+      idleIdx = walkIdx = 0;
+    } else if (currentTime - idxTime > idxDuration) {
       idxTime = currentTime;
-       refresh = true; 
+      refresh = true;
     }
-      
-    if(refresh){
-      if (state == "walkingL") {
-        walkIdx = ((walkIdx - 1)%nbWalk+nbWalk)%nbWalk;
-      } else if (state == "walkingR") {
+
+    if (refresh) {
+      if (state == "walkingL" || state == "walkingR") {
+        //        walkIdx = ((walkIdx - 1)%nbWalk+nbWalk)%nbWalk;
         walkIdx = (walkIdx+1)%nbWalk;
       } else if (state == "idle") {
         idleIdx = (idleIdx+1)%nbIdle;
@@ -106,28 +107,22 @@ class Sprites {
     walk[13] = 935;
 
     /// IDLE
-    idle[0] = 59;
+    idle[0] = 190;
     idle[1] = 547;
-    idle[2] = 190;
+    idle[2] = 322;
     idle[3] = 547;
-    idle[4] = 322;
+    idle[4] = 452;
     idle[5] = 547;
-    idle[6] = 452;
-    idle[7] = 547;// w = h = 120
-
-    idle[8] = 0;
+    idle[6] = 0;
+    idle[7] = 681;
+    idle[8] = 131;
     idle[9] = 681;
-    idle[10] = 131;
+    idle[10] = 260;
     idle[11] = 681;
-    idle[12] = 260;
+    idle[12] = 386;
     idle[13] = 681;
-    idle[14] = 386;
+    idle[14] = 516;
     idle[15] = 681;
-    idle[16] = 516;
-    idle[17] = 681;
-
-    idle[18] = 43;
-    idle[19] = 814;
   }
 }
 

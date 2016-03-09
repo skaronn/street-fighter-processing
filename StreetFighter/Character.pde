@@ -29,21 +29,19 @@ class Character {
       if (state == "walkingR" || state == "idle") {
         direction = LEFT;
         state = "walkingL";
-      } else if (state == "walkingL"){
-        x = max(x - xSpeed, 0);
       }
+      x = max(x - xSpeed, 0);
       break;
     case RIGHT:
       if (state == "walkingL" || state == "idle") {
         direction = RIGHT;
         state = "walkingR";
-      } else if (state == "walkingR") {
-        x = min(x + xSpeed, width - sprites.w);
       }
+      x = min(x + xSpeed, width - sprites.w);
       break;
     }
   }
-  
+
   void processKeyReleased(int k) {
     switch(k) {
     case LEFT:
