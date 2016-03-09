@@ -4,7 +4,7 @@ Character c1;
 Character c2;
 PImage playgroundStage;
 Minim minim;
-playgroundMusic player;
+AudioPlayer playgroundMusic;
 Game game;
 
 void setup() {
@@ -35,5 +35,3 @@ void keyPressed() {
     }
   }
 }
-
-
