@@ -11,7 +11,7 @@ void setup() {
   size(800, 336);
   frame.setTitle("Street Fighter");
   c1 = new Character("Zangief");
-  c2 = new Character("Zangief");
+//  c2 = new Character("Zangief");
   game = new Game(c1, c2, "stages/NYFd64r.gif", "themes/119_heavy_swell_(theme_of_zangief).mp3", 180);
   playgroundStage = loadImage(game.imagePath, "gif");
   minim = new Minim(this);
