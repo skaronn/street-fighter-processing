@@ -20,7 +20,7 @@ class Character {
   } 
 
   void display() {
-    sprites.display(state, direction, x, y);
+    state = sprites.display(state, direction, x, y);
   }
 
   void processKeyPressed(int k) {
@@ -39,8 +39,13 @@ class Character {
       }
       x = min(x + xSpeed, width - sprites.w);
       break;
-      case DOWN:
-        state = "crouch";
+    case DOWN:
+      state = "crouch";
+      break;
+    case SHIFT:
+      if(state != "crouch"){
+        state = "fist";
+      }
       break;
     }
   }
@@ -57,6 +62,9 @@ class Character {
       if (state == "crouch") {
         state = "idle";
       }
+      break;
+    case SHIFT:
+
       break;
     }
   }

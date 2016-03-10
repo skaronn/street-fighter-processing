@@ -1,7 +1,7 @@
 import javax.swing.*; 
 
 class SpritesHelper {
-  float coeff = .5;
+  float coeff = .3;
   int spriteW, spriteH;
   SecondApplet s;
   PImage sprite;

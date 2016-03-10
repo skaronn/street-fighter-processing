@@ -20,12 +20,17 @@ class Sprites {
   final int[] idle = new int[2*nbIdle];
   final int idleW = 120;
   final int idleH = 120;
-  
+
   int crouchIdx = 0;
   final int nbCrouch = 3;
   final int[] crouch = new int[2*nbCrouch];
   final int crouchW = 120;
   final int crouchH = 120;
+
+  int fistIdx = 0;
+  final int nbFist = 7;
+  final int[] fist = new int[2*nbFist];
+  final int[] fistWH = new int[2*nbFist];
 
   Sprites(String n) {
     String url = "sprites/" + n + ".gif";
@@ -36,12 +41,15 @@ class Sprites {
     }
   }
 
-  void display(String state, int direction, int destx, int desty) {
-    dealWithIdx(state, direction);
+  String display(String state, int direction, int destx, int desty) {
+    // if the current state ends, return the nextState to the character
+    String nextState = dealWithIdx(state, direction);
 
     int srcw;
     int srcx, srcy;
-    int[] moveArray = {0, 0};
+    int[] moveArray = {
+      0, 0
+    };
     int idx = 0;
 
     if (state == "walkingL" || state == "walkingR") {
@@ -59,30 +67,37 @@ class Sprites {
       idx = crouchIdx;
       w = crouchW;
       h = crouchH;
+    } else if (state == "fist") {
+      moveArray = fist;
+      idx = fistIdx;
+      w = fistWH[2*fistIdx];
+      h = fistWH[2*fistIdx+1];
     }
-    
+
     srcw = direction == LEFT ? -w : w;
 
     srcx = moveArray[2*idx] + (direction == LEFT ? w : 0);
     srcy = moveArray[2*idx+1];
     copy(sprite, srcx, srcy, srcw, h, destx, desty, w, h);
 
-    prevState = state;
-
     if (help) {
-      spriteHelper.displayRect(moveArray[2*idx], moveArray[2*idx+1], w, h);
+      spriteHelper.displayRect(moveArray[2*idx], srcy, w, h);
     }
+    
+    prevState = state;
+    return nextState;
   }
 
-  void dealWithIdx(String state, int direction) {
+  String dealWithIdx(String state, int direction) {
     // sprite should be changed immediately if the state has changed
     // otherwise, wait during [idxDuration] milliseconds
     Boolean refresh = false;
     int currentTime = millis();
+    String nextState = state;
 
     if (state != prevState) {
       idxTime = currentTime;
-      idleIdx = walkIdx = crouchIdx = 0;
+      idleIdx = walkIdx = crouchIdx = fistIdx = 0;
     } else if (currentTime - idxTime > idxDuration) {
       idxTime = currentTime;
       refresh = true;
@@ -94,12 +109,18 @@ class Sprites {
         walkIdx = (walkIdx+1)%nbWalk;
       } else if (state == "idle") {
         idleIdx = (idleIdx+1)%nbIdle;
-      } else if(state == "crouch"){
+      } else if (state == "crouch") {
         crouchIdx = min(crouchIdx+1, nbCrouch-1);
-        println(crouchIdx);
+      } else if (state == "fist") {
+        fistIdx = min(fistIdx+1, nbFist-1);
+        if (fistIdx == nbFist-1) {
+          //return to idle at the end of the fist
+          nextState = "idle";
+        }
+        println("fistIdx: "  + fistIdx);
       }
     }
-    //    println("walkIdx: " + walkIdx);
+    return nextState;
   }
 
   void loadSpritePositions() {
@@ -136,7 +157,7 @@ class Sprites {
     idle[13] = 681;
     idle[14] = 516;
     idle[15] = 681;
-    
+
     /// CROUCH
     crouch[0] = 59;
     crouch[1] = 549;
@@ -144,6 +165,37 @@ class Sprites {
     crouch[3] = 1267;
     crouch[4] = 264;
     crouch[5] = 1267;
+
+    /// FIST
+    fist[0] = 1;//w, h = 135
+    fist[1] = 1970;
+    fist[2] = 141;//w = 141, h = 135
+    fist[3] = 1970;
+    fist[4] = 302;//w, h = 135
+    fist[5] = 1970;
+    fist[6] = 443;//w = 194, h = 135
+    fist[7] = 1970;
+    fist[8] = 47;//w = 148, h = 135
+    fist[9] = 2114;
+    fist[10] = 302;//w, h = 135
+    fist[11] = 1970;
+    fist[12] = 141;//w = 141, h = 135
+    fist[13] = 1970;
+
+    fistWH[0] = 135;
+    fistWH[1] = 135;
+    fistWH[2] = 141;
+    fistWH[3] = 135;
+    fistWH[4] = 135;
+    fistWH[5] = 135;
+    fistWH[6] = 194;
+    fistWH[7] = 135;    
+    fistWH[8] = 148;
+    fistWH[9] = 135; 
+    fistWH[10] = 135;
+    fistWH[11] = 135;   
+    fistWH[12] = 141;
+    fistWH[13] = 135;
   }
 }
 

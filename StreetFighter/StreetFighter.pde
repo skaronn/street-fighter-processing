@@ -31,6 +31,7 @@ void keyPressed() {
     case LEFT:
     case RIGHT:
     case DOWN:
+    case SHIFT:
       c1.processKeyPressed(keyCode);
       break;
     }
@@ -43,6 +44,7 @@ void keyReleased() {
     case LEFT:
     case RIGHT:
     case DOWN:
+    case SHIFT:
       c1.processKeyReleased(keyCode);
       break;
     }
