@@ -4,10 +4,29 @@ final int INSERT_COIN_CONTEXT = 0;
 final int CHARACTER_SELECTION_CONTEXT = 1;
 final int FIGHT_CONTEXT = 2;
 final int BONUS_CONTEXT = 3;
-
+final int CINEMATIC_CONTEXT = 4;
 int context;
+
 int refreshMillis = 130;
 int lastRefresh = millis();
+
+int SOIL;
+int AIR;
+int CLOSE;
+int HOLD;
+
+int KEY_LEFT;
+int KEY_UP;
+int KEY_RIGHT;
+int KEY_DOWN;
+int KEY_HIGH_PUNCH;
+int KEY_PUNCH;
+int KEY_MEDIUM_PUNCH;
+int KEY_LOW_PUNCH;
+int KEY_HIGH_KICK;
+int KEY_KICK;
+int KEY_LOW_KICK;
+int KEY_MEDIUM_KICK;
 
 Game game;
 Character c1;
