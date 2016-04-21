@@ -1,0 +1,62 @@
+import javax.swing.JFrame;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+
+class SpritesHelper {
+
+	private double coeff = 0.3;
+	private int spriteW;
+	private int spriteH;
+	private SecondApplet s;
+	private PImage sprite;
+	private PFrame f;
+
+	SpritesHelper(PImage img) {
+		sprite = img;
+		spriteW = Double.valueOf(coeff * img.width).intValue();
+		spriteH = Double.valueOf(coeff * img.height).intValue();
+		f = new PFrame(spriteW, spriteH);
+		f.setTitle("second window");
+	}
+
+	void displayRect(int x, int y, int w, int h) {
+		s.displayRect(Double.valueOf(coeff * x).intValue(), Double.valueOf(coeff * y).intValue(),
+				Double.valueOf(coeff * w).intValue(), Double.valueOf(coeff * h).intValue());
+	}
+
+	public class PFrame extends JFrame {
+		public PFrame(int spriteW, int spriteH) {
+			setBounds(100, 100, spriteW, spriteH);
+			s = new SecondApplet();
+			add(s);
+			s.init();
+			setVisible(true);
+		}
+	}
+
+	public class SecondApplet extends PApplet {
+		int x, y, w, h;
+
+		public void setup() {
+			stroke(230, 12, 12);
+			strokeWeight(2);
+			noFill();
+		}
+
+		public void draw() {
+			background(60);
+//			image(sprite, 0, 0, spriteW, spriteH);
+			copy(sprite, 0, 0, spriteW, spriteH);
+			rect(x, y, w, h);
+		}
+
+		void displayRect(int x, int y, int w, int h) {
+			this.x = x;
+			this.y = y;
+			this.w = w;
+			this.h = h;
+		}
+	}
+
+}

@@ -1,0 +1,217 @@
+import processing.core.PApplet;
+import processing.core.PImage;
+
+class Sprites extends PApplet {
+
+	boolean help = true;
+	SpritesHelper spriteHelper;
+	int idxDuration = 120;// number of frames during which a sprite is displayed
+	int idxTime = millis();
+	String prevState = "idle";
+
+	PImage sprite;
+	int w = 10;
+	int h = 10;
+
+	int walkIdx = 0;
+	final int nbWalk = 7;
+	final int[] walk = new int[2 * nbWalk];
+	final int walkW = 135;
+	final int walkH = 140;
+
+	int idleIdx = 0;
+	final int nbIdle = 8;
+	final int[] idle = new int[2 * nbIdle];
+	final int idleW = 120;
+	final int idleH = 120;
+
+	int crouchIdx = 0;
+	final int nbCrouch = 3;
+	final int[] crouch = new int[2 * nbCrouch];
+	final int crouchW = 120;
+	final int crouchH = 120;
+
+	int fistIdx = 0;
+	final int nbFist = 7;
+	final int[] fist = new int[2 * nbFist];
+	final int[] fistWH = new int[2 * nbFist];
+
+	Sprites(String n) {
+		String url = "sprites/" + n + ".gif";
+		sprite = loadImage(url);
+		loadSpritePositions();
+
+		if (help) {
+			spriteHelper = new SpritesHelper(sprite);
+		}
+	}
+	
+	public void setup(){
+		super.setup();
+	}
+	
+	String display(String state, int direction, int destx, int desty) {
+		// if the current state ends, return the nextState to the character
+		String nextState = dealWithIdx(state, direction);
+
+		int srcw;
+		int srcx, srcy;
+		int[] moveArray = { 0, 0 };
+
+		int idx = 0;
+
+		if (state == "walkingL" || state == "walkingR") {
+			moveArray = walk;
+			idx = walkIdx;
+			w = walkW;
+			h = walkH;
+		} else if (state == "idle") {
+			moveArray = idle;
+			idx = idleIdx;
+			w = idleW;
+			h = idleH;
+		} else if (state == "crouch") {
+			moveArray = crouch;
+			idx = crouchIdx;
+			w = crouchW;
+			h = crouchH;
+		} else if (state == "fist") {
+			moveArray = fist;
+			idx = fistIdx;
+			w = fistWH[2 * fistIdx];
+			h = fistWH[2 * fistIdx + 1];
+		}
+
+		srcw = direction == LEFT ? -w : w;
+		srcx = moveArray[2 * idx] + (direction == LEFT ? w : 0);
+		srcy = moveArray[2 * idx + 1];
+
+		System.out.println("sprite: " + sprite);
+		System.out.println("srcx: " + srcx);
+		System.out.println("srcy: " + srcy);
+		System.out.println("srcw: " + srcw);
+		System.out.println("h: " + h);
+		System.out.println("destx: " + destx);
+		System.out.println("desty: " + desty);
+		System.out.println("w: " + w);
+		//copy(sprite, srcx, srcy, srcw, h, destx, desty, w, h);
+//		image(sprite, 0, 0, 120, 230);
+
+		if (help) {
+			spriteHelper.displayRect(moveArray[2 * idx], srcy, w, h);
+		}
+
+		prevState = state;
+		return nextState;
+	}
+
+	String dealWithIdx(String state, int direction) {
+		// sprite should be changed immediately if the state has changed
+		// otherwise, wait during [idxDuration] milliseconds
+		boolean refresh = false;
+		int currentTime = millis();
+		String nextState = state;
+
+		if (state != prevState) {
+			idxTime = currentTime;
+			idleIdx = walkIdx = crouchIdx = fistIdx = 0;
+		} else if (currentTime - idxTime > idxDuration) {
+			idxTime = currentTime;
+			refresh = true;
+		}
+
+		if (refresh) {
+			if (state == "walkingL" || state == "walkingR") {
+				// walkIdx = ((walkIdx - 1)%nbWalk+nbWalk)%nbWalk;
+				walkIdx = (walkIdx + 1) % nbWalk;
+			} else if (state == "idle") {
+				idleIdx = (idleIdx + 1) % nbIdle;
+			} else if (state == "crouch") {
+				crouchIdx = Math.min(crouchIdx + 1, nbCrouch - 1);
+			} else if (state == "fist") {
+				fistIdx = Math.min(fistIdx + 1, nbFist - 1);
+				if (fistIdx == nbFist - 1) {
+					// return to idle at the end of the fist
+					nextState = "idle";
+				}
+				System.out.println("fistIdx: " + fistIdx);
+			}
+		}
+		return nextState;
+	}
+
+	void loadSpritePositions() {
+		/// WALKING
+		walk[0] = 175;
+		walk[1] = 800;
+		walk[2] = 310;
+		walk[3] = 800;
+		walk[4] = 445;
+		walk[5] = 800;
+		walk[6] = 5;
+		walk[7] = 940;
+		walk[8] = 155;
+		walk[9] = 940;
+		walk[10] = 285;
+		walk[11] = 935;
+		walk[12] = 385;
+		walk[13] = 935;
+
+		/// IDLE
+		idle[0] = 190;
+		idle[1] = 547;
+		idle[2] = 322;
+		idle[3] = 547;
+		idle[4] = 452;
+		idle[5] = 547;
+		idle[6] = 0;
+		idle[7] = 681;
+		idle[8] = 131;
+		idle[9] = 681;
+		idle[10] = 260;
+		idle[11] = 681;
+		idle[12] = 386;
+		idle[13] = 681;
+		idle[14] = 516;
+		idle[15] = 681;
+
+		/// CROUCH
+		crouch[0] = 59;
+		crouch[1] = 549;
+		crouch[2] = 137;
+		crouch[3] = 1267;
+		crouch[4] = 264;
+		crouch[5] = 1267;
+
+		/// FIST
+		fist[0] = 1;// w, h = 135
+		fist[1] = 1970;
+		fist[2] = 141;// w = 141, h = 135
+		fist[3] = 1970;
+		fist[4] = 302;// w, h = 135
+		fist[5] = 1970;
+		fist[6] = 443;// w = 194, h = 135
+		fist[7] = 1970;
+		fist[8] = 47;// w = 148, h = 135
+		fist[9] = 2114;
+		fist[10] = 302;// w, h = 135
+		fist[11] = 1970;
+		fist[12] = 141;// w = 141, h = 135
+		fist[13] = 1970;
+
+		fistWH[0] = 135;
+		fistWH[1] = 135;
+		fistWH[2] = 141;
+		fistWH[3] = 135;
+		fistWH[4] = 135;
+		fistWH[5] = 135;
+		fistWH[6] = 194;
+		fistWH[7] = 135;
+		fistWH[8] = 148;
+		fistWH[9] = 135;
+		fistWH[10] = 135;
+		fistWH[11] = 135;
+		fistWH[12] = 141;
+		fistWH[13] = 135;
+	}
+}
